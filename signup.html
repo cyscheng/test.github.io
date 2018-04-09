@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Test- Create Account</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+
+<body>
+  <div class="fh5co-loader"></div>
+  <div id="page">
+    
+    <div class="setting-content">
+      <div class="container">
+        <form id="account-create-form">
+          <table class="table table-bordered">
+            <tr>
+              <td width="20%">First Name</td>
+              <td><input type="text" id="js-fname" class="form-control" placeholder="First Name" required></td>
+            </tr>
+            <tr>
+              <td>Last Name</td>
+              <td><input type="text" id="js-lname" class="form-control" placeholder="Last Name" required></td>
+            </tr>
+            <tr>
+              <td>NRIC</td>
+              <td><input type="text" id="js-nric" class="form-control" placeholder="NRIC" required></td>
+            </tr>
+            <tr>
+              <td>Address</td>
+              <td><textarea class="form-control" id="js-address" rows="4" required></textarea></td>
+            </tr>
+            <tr>
+              <td>Email Address</td>
+              <td><input type="email" id="js-email" class="form-control" placeholder="User@Email.com" required></td>
+            </tr>
+            <tr>
+              <td>Password</td>
+              <td><input type="password" id="js-password" class="form-control" placeholder="Password" required></td>
+            </tr>
+            <tr>
+              <td>Account Level</td>
+              <td><select class="form-control" id="js-acc-level" required>
+                <option disabled selected> -- select an option -- </option>
+                <option value="1">User</option>
+                <option value="2">Administrator</option>
+              </select></td>
+            </tr>
+          </table>
+          <div id="success-message" class="alert" hidden></div>
+          <div class="row">
+            <div class="form-group col-xs-12 text-center">
+              <button type="submit" class="btn btn-default btn-submit">Submit</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+
+  
+
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+  <!-- Custom -->
+  <script src="C:/Users/cys_c/Desktop/test/test.js"></script>
+  <!-- Admin login Check -->
+  <script src="C:/Users/cys_c/Desktop/test/adminCheck.js"></script>
+
+  <script type="text/javascript">
+    $(function() {
+      /*--- Setting > Account Creation ---*/
+      $('#account-create-form').on('submit', function(e) {
+        e.preventDefault();
+        var updates = {};
+        var password = $('#js-password').val();
+        var userInfo = new Object();
+        userInfo.fname = $('#js-fname').val();
+        userInfo.lname = $('#js-lname').val();
+        userInfo.nric = $('#js-nric').val();
+        userInfo.address = $('#js-address').val();
+        userInfo.email = $('#js-email').val();
+        userInfo.acc_level = parseInt($('#js-acc-level').val());
+        firebase.auth().createUserWithEmailAndPassword(userInfo.email, password)
+          .then(user => {
+            userInfo.userId = firebase.auth().currentUser.uid;
+            updates['/account_Info/' + userInfo.userId] = userInfo;
+
+            firebase.database().ref().update(updates).then(function() {
+              $('#success-message').addClass("alert-success").text("Account Successfully Created!").fadeIn();
+              setTimeout(function() {
+                $("#success-message").removeClass("alert-success").fadeOut();
+              }, 1500);
+              $('#account-create-form').trigger("reset");
+            });
+          })
+          .catch(function(error) {
+            $('#success-message').addClass("alert-danger").text(error.message).fadeIn();
+            setTimeout(function() {
+              $("#success-message").removeClass("alert-danger").fadeOut();
+            }, 1500);
+          });
+      });
+    });
+  </script>
+
+
+
+</body>
+
+</html>

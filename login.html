@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> Login</title>
+
+  <style type="text/css">
+    .brand a {
+      color: black;
+    }
+
+    .brand {
+      font-size: 40px;
+      margin: 0;
+      padding: 0;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-weight: 700;
+      font-family: "Work Sans", Arial, sans-serif;
+    }
+
+    .brand a span {
+      color: #F85A16;
+    }
+
+    .brand-box {
+      padding-bottom: 10px;
+    }
+
+    .login-box {
+      padding-top: 50px;
+    }
+
+    .btn-login:hover,
+    .btn-login {
+      background: #F85A16;
+      color: #fff;
+      border: 2px solid #F85A16;
+      width: 140px;
+    }
+
+    .login-sel {
+      padding-top: 10px;
+    }
+
+    .btn-facebook,
+    .btn-facebook:hover {
+      border-radius: 3px;
+      background-color: #3b5998;
+      color: #fff;
+      border: 2px solid #3b5998;
+      width: 260px;
+    }
+
+    .btn-google,
+    .btn-google:hover {
+      border-radius: 3px;
+      background-color: #DD4B39;
+      color: #fff;
+      border: 2px solid #DD4B39;
+      width: 260px;
+    }
+
+    .hr-middle {
+      text-decoration: line-through;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="login-box">
+        <div class="col-xs-12 text-center brand-box">
+          <div class="brand"><a href="C:/Users/cys_c/Desktop/test/tempmain.html"><span>.</span></a></div>
+        </div>
+        <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+          <form id="login-form">
+            <div class="form-group col-xs-12 floating-label-form-group controls">
+              <div class="row control-group">
+                <div class="form-group col-xs-12 floating-label-form-group controls">
+                  <label id="email-title">Email address</label>
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                    <input type="email" class="form-control" placeholder="Email Address" id="js-email" required data-validation-required-message="Please enter your email address.">
+                    <p class="help-block text-danger"></p>
+                  </div>
+
+                </div>
+              </div>
+              <div class="row control-group">
+                <div class="form-group col-xs-12 floating-label-form-group controls">
+                  <label id="password-title">Password</label>
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                    <input type="password" class="form-control" placeholder="Password" id="js-password" required data-validation-required-message="Please enter your password.">
+                    <p class="help-block text-danger"></p>
+                  </div>
+
+                </div>
+              </div>
+              <div class="login-sel">
+                <div class="row">
+                  <div class="form-group col-xs-12 text-center">
+                    <button type="submit" class="btn btn-default btn-login" id="login-with-email">Log in</button>
+                  </div>
+                  <div class="form-group col-xs-12 text-center">
+                    <a class="btn btn-default btn-login" href="C:/Users/cys_c/Desktop/test/signupfrommain.html">Register</a>
+                  </div>
+                </div>
+                <p class="text-center">
+                  <span class="hr-middle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> &nbsp;or&nbsp;
+                  <span class="hr-middle">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                </p>
+                <div class="row">
+                  <div class="form-group col-xs-12 text-center" id="button-container">
+                    <button type="button" class="btn btn-facebook" onclick="signFacebook();">
+                      <i class="fa fa-facebook-official" aria-hidden="true"></i>
+                      &nbsp;Login with Facebook</button>
+                  </div>
+                </div>
+
+
+                <div class="row">
+                  <div class="form-group col-xs-12 text-center" id="button-container">
+                    <button type="button" class="btn btn-google" onclick="signGoogle();">
+                        <i class="fa fa-google" aria-hidden="true"></i>
+                        &nbsp;Login with Google</button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main -->
+  <script src="main.js"></script>
+  <!-- Custom -->
+  <script src="test.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+
+  <script>
+    $(function() {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          location.href = "C:/Users/cys_c/Desktop/test/tempmain.html";
+        }
+      });
+    });
+    /*---facebook signed-in--*/
+    var provider1 = new firebase.auth.FacebookAuthProvider();
+    provider1.addScope('user_birthday');
+
+    function signFacebook() {
+      firebase.auth().signInWithPopup(provider1).then(function(result) {
+        var token = result.credential.accessToken;
+        var user = result.user;
+
+        console.log(token)
+        console.log(user)
+      }).catch(function(error) {
+        var errorCode = error.code;
+        var errorMessage = error.message;
+
+        console.log(error.code)
+        console.log(error.message)
+      });
+    }
+
+
+    /*---google sign in---*/
+    var provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+
+    function signGoogle() {
+      firebase.auth()
+
+        .signInWithPopup(provider).then(function(result) {
+          var token = result.credential.accessToken;
+          var user = result.user;
+
+          console.log(token)
+          console.log(user)
+        }).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+
+          console.log(error.code)
+          console.log(error.message)
+        });
+    }
+  </script>
+
+</body>
+
+</html>
